@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import HoloCard from '@/components/HoloCard';
 
 type MotionState = 'pending' | 'ready' | 'prompt' | 'denied' | 'unsupported';
@@ -48,6 +48,7 @@ const requestMotion = async () => {
 export default function HoloCardStage() {
   const mounted = useSyncExternalStore(subscribe, getMounted, getServerMounted);
   const [permission, setPermission] = useState<MotionPermission>('prompt');
+  const [sensing, setSensing] = useState(false);
   const requested = useRef(false);
   const { supported, needsPermission } = readMotion();
 
@@ -72,6 +73,19 @@ export default function HoloCardStage() {
     }
   };
 
+  useEffect(() => {
+    if (motion !== 'prompt') return undefined;
+    let cancelled = false;
+    requestMotion()
+      .then(result => {
+        if (!cancelled && result === 'granted') setPermission('granted');
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [motion]);
+
   return (
     <div
       className="flex w-full flex-col items-center gap-6"
@@ -89,10 +103,13 @@ export default function HoloCardStage() {
         tiltMax={12}
         hoverScale={1.03}
         gyro={motion !== 'unsupported'}
+        onMotion={() => setSensing(true)}
       />
 
       <div className="flex min-h-11 flex-col items-center justify-center gap-1.5 text-center">
-        {motion === 'prompt' ? (
+        {sensing ? (
+          <p className="text-xs text-white/40">Motion is active — tilt your phone.</p>
+        ) : motion === 'prompt' ? (
           <>
             <button
               type="button"

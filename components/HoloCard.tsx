@@ -22,6 +22,7 @@ export interface HoloCardProps {
   hoverScale?: number;
   idle?: boolean;
   gyro?: boolean;
+  onMotion?: () => void;
   shadow?: boolean;
   className?: string;
   style?: CSSProperties;
@@ -357,6 +358,7 @@ export default function HoloCard({
   hoverScale = 1.04,
   idle = true,
   gyro = true,
+  onMotion,
   shadow = true,
   className = '',
   style
@@ -384,6 +386,7 @@ export default function HoloCard({
   });
   const wakeRef = useRef<(() => void) | null>(null);
   const loadRef = useRef<((src?: string) => void) | null>(null);
+  const onMotionRef = useRef(onMotion);
   const flipRef = useRef(false);
   const [ratio, setRatio] = useState(CARD_RATIO);
   const [ready, setReady] = useState(false);
@@ -410,6 +413,7 @@ export default function HoloCard({
   useEffect(() => {
     settingsRef.current = settings;
     flipRef.current = flippable && flipped;
+    onMotionRef.current = onMotion;
     wakeRef.current?.();
   });
 
@@ -439,6 +443,7 @@ export default function HoloCard({
         active: true,
         source
       };
+      if (!current.active) onMotionRef.current?.();
       wakeRef.current?.();
     };
 
