@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useRef, useState, useSyncExternalStore } from 'react';
 import HoloCard from '@/components/HoloCard';
 
 type MotionState = 'pending' | 'ready' | 'prompt' | 'denied' | 'unsupported';
@@ -10,21 +10,45 @@ type OrientationConstructor = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<string>;
 };
 
+type MotionConstructor = typeof DeviceMotionEvent & {
+  requestPermission?: () => Promise<string>;
+};
+
 const subscribe = () => () => {};
 const getMounted = () => true;
 const getServerMounted = () => false;
 
 const readMotion = () => {
-  if (typeof window === 'undefined' || !('DeviceOrientationEvent' in window)) {
+  if (typeof window === 'undefined') {
     return { supported: false, needsPermission: false };
   }
-  const ctor = window.DeviceOrientationEvent as OrientationConstructor;
-  return { supported: true, needsPermission: typeof ctor.requestPermission === 'function' };
+  const orientation =
+    'DeviceOrientationEvent' in window
+      ? (window.DeviceOrientationEvent as OrientationConstructor)
+      : null;
+  const motion =
+    'DeviceMotionEvent' in window ? (window.DeviceMotionEvent as MotionConstructor) : null;
+  return {
+    supported: Boolean(orientation || motion),
+    needsPermission: typeof (orientation?.requestPermission ?? motion?.requestPermission) === 'function'
+  };
+};
+
+const requestMotion = async () => {
+  const orientation =
+    'DeviceOrientationEvent' in window
+      ? (window.DeviceOrientationEvent as OrientationConstructor)
+      : null;
+  const motion =
+    'DeviceMotionEvent' in window ? (window.DeviceMotionEvent as MotionConstructor) : null;
+  const target = orientation?.requestPermission ? orientation : motion;
+  return target?.requestPermission ? target.requestPermission() : 'granted';
 };
 
 export default function HoloCardStage() {
   const mounted = useSyncExternalStore(subscribe, getMounted, getServerMounted);
   const [permission, setPermission] = useState<MotionPermission>('prompt');
+  const requested = useRef(false);
   const { supported, needsPermission } = readMotion();
 
   const motion: MotionState = !mounted
@@ -38,10 +62,10 @@ export default function HoloCardStage() {
           : 'prompt';
 
   const enableMotion = async () => {
-    const ctor = window.DeviceOrientationEvent as OrientationConstructor;
+    if (requested.current) return;
+    requested.current = true;
     try {
-      const result =
-        typeof ctor.requestPermission === 'function' ? await ctor.requestPermission() : 'granted';
+      const result = await requestMotion();
       setPermission(result === 'granted' ? 'granted' : 'denied');
     } catch {
       setPermission('denied');
@@ -49,7 +73,10 @@ export default function HoloCardStage() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center gap-6">
+    <div
+      className="flex w-full flex-col items-center gap-6"
+      onClick={motion === 'prompt' ? enableMotion : undefined}
+    >
       <HoloCard
         image="/holo/maushold.webp"
         alt="Maushold trading card"
@@ -61,7 +88,7 @@ export default function HoloCardStage() {
         frame={8}
         tiltMax={12}
         hoverScale={1.03}
-        gyro={motion === 'ready'}
+        gyro={motion !== 'unsupported'}
       />
 
       <div className="flex min-h-11 flex-col items-center justify-center gap-1.5 text-center">
@@ -74,7 +101,7 @@ export default function HoloCardStage() {
             >
               Enable motion tilt
             </button>
-            <p className="text-xs text-white/35">Let the card follow your phone.</p>
+            <p className="text-xs text-white/35">Tap, then tilt your phone to move the light.</p>
           </>
         ) : motion === 'denied' ? (
           <p className="text-xs text-white/40">Motion is blocked — move the pointer across the card instead.</p>

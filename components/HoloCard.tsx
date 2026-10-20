@@ -371,8 +371,17 @@ export default function HoloCard({
     x: number;
     y: number;
     active: boolean;
-    base: { beta: number; gamma: number } | null;
-  }>({ x: 0.5, y: 0.5, active: false, base: null });
+    source: 'orientation' | 'motion' | null;
+    orientationBase: { beta: number; gamma: number } | null;
+    motionBase: { x: number; y: number } | null;
+  }>({
+    x: 0.5,
+    y: 0.5,
+    active: false,
+    source: null,
+    orientationBase: null,
+    motionBase: null
+  });
   const wakeRef = useRef<(() => void) | null>(null);
   const loadRef = useRef<((src?: string) => void) | null>(null);
   const flipRef = useRef(false);
@@ -410,30 +419,86 @@ export default function HoloCard({
 
   useEffect(() => {
     if (!gyro) return undefined;
+
+    const screenAngle = () => window.screen?.orientation?.angle ?? 0;
+
+    const rotate = (dx: number, dy: number) => {
+      const angle = (screenAngle() * Math.PI) / 180;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      return { x: dx * cos + dy * sin, y: -dx * sin + dy * cos };
+    };
+
+    const publish = (x: number, y: number, source: 'orientation' | 'motion') => {
+      const current = orientationRef.current;
+      if (current.source === 'orientation' && source === 'motion') return;
+      orientationRef.current = {
+        ...current,
+        x: clamp(x, 0, 1),
+        y: clamp(y, 0, 1),
+        active: true,
+        source
+      };
+      wakeRef.current?.();
+    };
+
     const onOrientation = (event: DeviceOrientationEvent) => {
       const { beta, gamma } = event;
       if (beta === null || gamma === null) return;
       const current = orientationRef.current;
-      const base = current.base ?? { beta, gamma };
+      if (!current.orientationBase) current.orientationBase = { beta, gamma };
+      const delta = rotate(
+        gamma - current.orientationBase.gamma,
+        -(beta - current.orientationBase.beta)
+      );
+      publish(0.5 + delta.x / 26, 0.5 + delta.y / 26, 'orientation');
+    };
+
+    const onMotion = (event: DeviceMotionEvent) => {
+      const gravity = event.accelerationIncludingGravity;
+      if (!gravity || gravity.x === null || gravity.y === null) return;
+      const current = orientationRef.current;
+      if (current.source === 'orientation') return;
+      if (!current.motionBase) current.motionBase = { x: gravity.x, y: gravity.y };
+      const delta = rotate(gravity.x - current.motionBase.x, -(gravity.y - current.motionBase.y));
+      publish(0.5 + delta.x / 6, 0.5 + delta.y / 6, 'motion');
+    };
+
+    const recenter = () => {
+      if (document.hidden) return;
+      const current = orientationRef.current;
       orientationRef.current = {
-        x: clamp(0.5 + (gamma - base.gamma) / 30, 0, 1),
-        y: clamp(0.5 - (beta - base.beta) / 30, 0, 1),
-        active: true,
-        base
+        ...current,
+        x: 0.5,
+        y: 0.5,
+        orientationBase: null,
+        motionBase: null
       };
       wakeRef.current?.();
     };
-    const recenter = () => {
-      if (document.hidden) return;
-      orientationRef.current = { ...orientationRef.current, x: 0.5, y: 0.5, base: null };
-      wakeRef.current?.();
-    };
+
     window.addEventListener('deviceorientation', onOrientation);
+    window.addEventListener('deviceorientationabsolute', onOrientation as EventListener);
+    window.addEventListener('devicemotion', onMotion);
+    window.addEventListener('orientationchange', recenter);
     document.addEventListener('visibilitychange', recenter);
+    window.screen?.orientation?.addEventListener('change', recenter);
+
     return () => {
       window.removeEventListener('deviceorientation', onOrientation);
+      window.removeEventListener('deviceorientationabsolute', onOrientation as EventListener);
+      window.removeEventListener('devicemotion', onMotion);
+      window.removeEventListener('orientationchange', recenter);
       document.removeEventListener('visibilitychange', recenter);
-      orientationRef.current = { x: 0.5, y: 0.5, active: false, base: null };
+      window.screen?.orientation?.removeEventListener('change', recenter);
+      orientationRef.current = {
+        x: 0.5,
+        y: 0.5,
+        active: false,
+        source: null,
+        orientationBase: null,
+        motionBase: null
+      };
     };
   }, [gyro]);
 
