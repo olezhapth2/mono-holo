@@ -96,9 +96,9 @@ export default function HoloCardStage() {
         alt="F1 scratch and win card"
         preset="glitter"
         foilColor="#ffffff"
-        intensity={0.9}
+        intensity={0.45}
         scale={1.75}
-        edgeSparkle={0.75}
+        edgeSparkle={0.375}
         frame={8}
         tiltMax={12}
         hoverScale={1.03}
