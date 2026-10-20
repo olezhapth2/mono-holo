@@ -92,8 +92,8 @@ export default function HoloCardStage() {
       onClick={motion === 'prompt' ? enableMotion : undefined}
     >
       <HoloCard
-        image="/holo/maushold.webp"
-        alt="Maushold trading card"
+        image="/holo/f1-scratch.webp"
+        alt="F1 scratch and win card"
         preset="glitter"
         foilColor="#ffffff"
         intensity={0.9}

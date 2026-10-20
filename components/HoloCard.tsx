@@ -44,7 +44,7 @@ interface Settings {
 
 const PRESETS: HoloPreset[] = ['bursts', 'stars', 'shards', 'cosmos', 'rainbow', 'swirl', 'glitter', 'gold'];
 const PERSPECTIVE = 1100;
-const CARD_RATIO = 63 / 88;
+const CARD_RATIO = 3 / 4;
 
 const VERTEX = `#version 300 es
 in vec2 position;
