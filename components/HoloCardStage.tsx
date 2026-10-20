@@ -1,0 +1,89 @@
+'use client';
+
+import { useState, useSyncExternalStore } from 'react';
+import HoloCard from '@/components/HoloCard';
+
+type MotionState = 'pending' | 'ready' | 'prompt' | 'denied' | 'unsupported';
+type MotionPermission = 'prompt' | 'granted' | 'denied';
+
+type OrientationConstructor = typeof DeviceOrientationEvent & {
+  requestPermission?: () => Promise<string>;
+};
+
+const subscribe = () => () => {};
+const getMounted = () => true;
+const getServerMounted = () => false;
+
+const readMotion = () => {
+  if (typeof window === 'undefined' || !('DeviceOrientationEvent' in window)) {
+    return { supported: false, needsPermission: false };
+  }
+  const ctor = window.DeviceOrientationEvent as OrientationConstructor;
+  return { supported: true, needsPermission: typeof ctor.requestPermission === 'function' };
+};
+
+export default function HoloCardStage() {
+  const mounted = useSyncExternalStore(subscribe, getMounted, getServerMounted);
+  const [permission, setPermission] = useState<MotionPermission>('prompt');
+  const { supported, needsPermission } = readMotion();
+
+  const motion: MotionState = !mounted
+    ? 'pending'
+    : !supported
+      ? 'unsupported'
+      : !needsPermission || permission === 'granted'
+        ? 'ready'
+        : permission === 'denied'
+          ? 'denied'
+          : 'prompt';
+
+  const enableMotion = async () => {
+    const ctor = window.DeviceOrientationEvent as OrientationConstructor;
+    try {
+      const result =
+        typeof ctor.requestPermission === 'function' ? await ctor.requestPermission() : 'granted';
+      setPermission(result === 'granted' ? 'granted' : 'denied');
+    } catch {
+      setPermission('denied');
+    }
+  };
+
+  return (
+    <div className="flex w-full flex-col items-center gap-6">
+      <HoloCard
+        image="/holo/maushold.webp"
+        alt="Maushold trading card"
+        preset="glitter"
+        foilColor="#ffffff"
+        intensity={0.9}
+        scale={1.75}
+        edgeSparkle={0.75}
+        frame={8}
+        tiltMax={12}
+        hoverScale={1.03}
+        gyro={motion === 'ready'}
+      />
+
+      <div className="flex min-h-11 flex-col items-center justify-center gap-1.5 text-center">
+        {motion === 'prompt' ? (
+          <>
+            <button
+              type="button"
+              onClick={enableMotion}
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-medium tracking-wide text-white transition-colors duration-300 hover:border-white/60 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
+            >
+              Enable motion tilt
+            </button>
+            <p className="text-xs text-white/35">Let the card follow your phone.</p>
+          </>
+        ) : motion === 'denied' ? (
+          <p className="text-xs text-white/40">Motion is blocked — move the pointer across the card instead.</p>
+        ) : motion === 'unsupported' ? (
+          <p className="text-xs text-white/40">Move the pointer across the card to catch the foil.</p>
+        ) : (
+          <p className="text-xs text-white/40">Tilt your phone or move the pointer.</p>
+        )}
+      </div>
+    </div>
+  );
+}
