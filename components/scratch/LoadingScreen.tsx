@@ -22,29 +22,37 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
           <h1 className="holo-title relative font-pixel text-[36px] leading-[52px] uppercase">
             Holo Card
           </h1>
-          <p className="relative -mt-2 font-mono text-[10px] tracking-[0.2em] text-white/60 uppercase">
+          <p className="relative -mt-2 font-sans text-[10px] font-bold tracking-[2px] text-[#8a8a8a] uppercase">
             Scratch &amp; Win
           </p>
         </div>
 
         <div className="anim-rise mt-3 [@media(min-height:701px)]:mt-[42px]" style={{ animationDelay: '80ms' }}>
-          <HoloCard
-            image="/holo/f1-scratch.webp"
-            alt="F1 scratch and win card"
-            preset="gold"
-            foilColor="#94a3b8"
-            intensity={0.9}
-            scale={1.75}
-            edgeSparkle={0.25}
-            frame={8}
-            glare={0.8}
-            radius={2}
-            width={298}
-            tiltMax={15}
-            hoverScale={1.03}
-            gyro
-            onMotion={() => setSensing(true)}
-          />
+          <button
+            type="button"
+            onClick={onStart}
+            disabled={starting}
+            aria-label="Open Holo Card"
+            className="block cursor-pointer rounded-[2px] transition-transform duration-300 active:scale-[0.985] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/60 disabled:cursor-wait disabled:opacity-80"
+          >
+            <HoloCard
+              image="/holo/f1-scratch.webp"
+              alt="F1 scratch and win card"
+              preset="gold"
+              foilColor="#94a3b8"
+              intensity={0.9}
+              scale={1.75}
+              edgeSparkle={0.25}
+              frame={8}
+              glare={0.8}
+              radius={2}
+              width={298}
+              tiltMax={15}
+              hoverScale={1.03}
+              gyro
+              onMotion={() => setSensing(true)}
+            />
+          </button>
         </div>
 
         <div className="anim-rise mt-5 w-full max-w-[320px] [@media(min-height:701px)]:mt-[47px]" style={{ animationDelay: '160ms' }}>
@@ -63,7 +71,7 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
         <div className="anim-rise mt-3 [@media(min-height:701px)]:mt-[29px]" style={{ animationDelay: '220ms' }}>
           <p
             key={sensing ? 'motion' : 'pointer'}
-            className="anim-text min-h-4 text-center text-[13px] text-white/60"
+            className="anim-text min-h-[18px] text-center font-sans text-[13px] font-bold leading-[18px] text-[#8a8a8a]"
           >
             {sensing ? 'Motion is active — tilt your phone.' : 'Tilt your phone or move the pointer.'}
           </p>

@@ -38,7 +38,7 @@ export default function GameScreen({
         <h1 className="holo-title relative font-pixel text-[36px] leading-[52px] uppercase">
           Scratch &amp; Win
         </h1>
-        <p className="relative -mt-2 font-mono text-[10px] tracking-[0.2em] text-white/60 uppercase">
+        <p className="relative -mt-2 font-sans text-[10px] font-bold tracking-[2px] text-[#8a8a8a] uppercase">
           3 GIFT IN 1 CARD
         </p>
       </div>
@@ -66,6 +66,11 @@ export default function GameScreen({
               hoverScale={1}
               idle={false}
               gyro={false}
+            />
+
+            <div
+              className="pointer-events-none absolute inset-0 z-10 rounded-[2px] bg-[linear-gradient(180deg,transparent_86%,rgba(70,53,15,0.85)_92%,#000_98%)]"
+              aria-hidden="true"
             />
 
             {PRIZES.map((prize, index) => (
@@ -104,11 +109,11 @@ export default function GameScreen({
 
         <div className="anim-rise mt-3 flex min-h-5 items-center justify-center" style={{ animationDelay: '230ms' }}>
           {allRevealed ? (
-            <p key="done" className="anim-text text-[13px] text-white/60">
+            <p key="done" className="anim-text font-sans text-[13px] font-bold leading-[18px] text-[#8a8a8a]">
               All gifts revealed
             </p>
           ) : (
-            <p key="hint" className="anim-text text-[13px] text-white/60">
+            <p key="hint" className="anim-text font-sans text-[13px] font-bold leading-[18px] text-[#8a8a8a]">
               Scratch the cover
             </p>
           )}

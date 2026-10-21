@@ -44,15 +44,15 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
           <h1 className="holo-title relative font-pixel text-[54px] leading-[78px] uppercase">
             Success
           </h1>
-          <p className="relative mt-2 font-mono text-[14px] leading-[14px] tracking-[0.14em] text-white uppercase">
+          <p className="relative mt-2 font-sans text-[14px] font-bold leading-[14px] tracking-[2px] text-white uppercase">
             You revealed all three gifts
           </p>
         </div>
 
         <div className="mt-7 w-full max-w-[320px]">
-          <div className="anim-rise flex items-center justify-between pb-2 font-mono text-[10px] tracking-[0.24em] text-white/55 uppercase" style={{ animationDelay: '80ms' }}>
+          <div className="anim-rise flex items-center justify-between pb-2 font-sans text-[10px] font-bold leading-[14px] tracking-normal text-[#8a8a8a] uppercase" style={{ animationDelay: '80ms' }}>
             <h2>Possible gifts</h2>
-            <span className="text-[#e8c87e]/80">3/3</span>
+            <span className="text-[#e8c87e]">3/3</span>
           </div>
           <ul className="border-y border-white/10">
             {PRIZES.map((prize, index) => (
@@ -62,17 +62,17 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
                 style={{ animationDelay: `${160 + index * 70}ms` }}
               >
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#e7c679]/30 bg-[#f2d580]/5">
-                  <PrizeIcon kind={prize.kind} id={`result-${index}`} className="size-[18px]" />
+                  <PrizeIcon kind={prize.kind} id={`result-${index}`} className="size-[14px]" />
                 </span>
                 <span className="flex min-w-0 flex-col items-start gap-0.5 text-left">
-                  <span className="font-mono text-[9px] tracking-[0.2em] text-white/50 uppercase">
+                  <span className="font-sans text-[9px] font-bold leading-[12px] tracking-normal text-[#8a8a8a] uppercase">
                     {prize.kicker}
                   </span>
-                  <span className="font-mono text-[11px] tracking-[0.16em] text-white/90">
+                  <span className="font-sans text-[11px] font-bold leading-[14px] tracking-normal text-[#e8e8e8]">
                     {prize.name}
                   </span>
                 </span>
-                <span className="ml-auto font-mono text-[9px] tracking-[0.2em] text-[#e8c87e]/80 uppercase">
+                <span className="ml-auto font-sans text-[9px] font-bold leading-[12px] tracking-normal text-[#e8c87e] uppercase">
                   Won
                 </span>
               </li>
@@ -93,7 +93,7 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
         <button
           type="button"
           onClick={share}
-          className="flex min-h-11 w-full max-w-[320px] items-center justify-center rounded-full border border-[#e7c679]/45 bg-[#e7c679]/10 px-6 text-[15px] font-bold tracking-wide text-[#ffe9b0] transition duration-300 hover:border-[#e7c679]/80 hover:bg-[#e7c679]/15 active:scale-[0.98] active:bg-[#e7c679]/20 focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
+          className="flex min-h-11 w-full max-w-[320px] items-center justify-center rounded-full border border-[#e7c679]/45 bg-[#e7c679]/10 px-6 font-sans text-[15px] font-bold leading-5 text-[#ffe9b0] transition duration-300 hover:border-[#e7c679]/80 hover:bg-[#e7c679]/15 active:scale-[0.98] active:bg-[#e7c679]/20 focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
         >
           <span key={status} className="anim-text" aria-live="polite">
             {status === 'copied'
@@ -109,7 +109,7 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
         <button
           type="button"
           onClick={onPlayAgain}
-          className="flex min-h-11 items-center justify-center px-4 font-mono text-[11px] tracking-[0.2em] text-white/60 uppercase transition duration-300 hover:text-white/90 active:scale-[0.98] focus-visible:text-white/90 focus-visible:outline-none"
+          className="flex min-h-11 items-center justify-center px-4 font-sans text-[11px] font-bold leading-[14px] tracking-normal text-[#8a8a8a] uppercase transition duration-300 hover:text-white/90 active:scale-[0.98] focus-visible:text-white/90 focus-visible:outline-none"
         >
           Home
         </button>
