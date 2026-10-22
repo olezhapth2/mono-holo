@@ -78,9 +78,9 @@ export default function GameScreen({
             {PRIZES.map((prize, index) => (
               <div
                 key={prize.name}
-                className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
+                className="game-prize absolute z-20 -translate-x-1/2 -translate-y-1/2"
                 style={{
-                  left: `${[22, 50, 78][index]}%`,
+                  left: `${[20.5, 50, 79.5][index]}%`,
                   top: '79%'
                 }}
               >
@@ -103,7 +103,7 @@ export default function GameScreen({
             type="button"
             onClick={allRevealed ? onFinish : onClearAll}
             disabled={!allRevealed && (!cardsReady || clearing)}
-            className="holo-btn flex h-11 w-full items-center justify-center overflow-hidden pb-[1.4px] font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none disabled:cursor-wait disabled:opacity-40"
+            className="holo-btn flex h-11 w-full items-center justify-center overflow-hidden pb-px font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none disabled:cursor-wait disabled:opacity-40"
           >
             <span key={allRevealed ? 'done' : clearing ? 'clearing' : 'idle'} className="anim-text">{allRevealed ? 'See result' : clearing ? 'Revealing…' : 'Reveal all'}</span>
           </button>

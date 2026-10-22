@@ -58,6 +58,8 @@ precision highp float;
 
 uniform sampler2D uArt;
 uniform vec2 uSize;
+uniform vec2 uCoverScale;
+uniform vec2 uCoverOffset;
 uniform float uAspect;
 uniform vec2 uTilt;
 uniform vec2 uLight;
@@ -249,7 +251,7 @@ void main() {
   float outside = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - uRadius;
   float pixel = 1.0 / uSize.x;
   float alpha = clamp(0.5 - outside / pixel, 0.0, 1.0);
-  vec4 sampled = texture(uArt, uv);
+  vec4 sampled = texture(uArt, uv * uCoverScale + uCoverOffset);
   if (uReady > 0.5) alpha *= sampled.a;
   if (alpha <= 0.0) {
     outColor = vec4(0.0);
@@ -385,6 +387,7 @@ export default function HoloCard({
     motionBase: null
   });
   const wakeRef = useRef<(() => void) | null>(null);
+  const texSizeRef = useRef({ w: 0, h: 0 });
   const loadRef = useRef<((src?: string) => void) | null>(null);
   const onMotionRef = useRef(onMotion);
   const flipRef = useRef(false);
@@ -553,6 +556,8 @@ export default function HoloCard({
         for (const name of [
           'uArt',
           'uSize',
+          'uCoverScale',
+          'uCoverOffset',
           'uAspect',
           'uTilt',
           'uLight',
@@ -607,6 +612,24 @@ export default function HoloCard({
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.uniform1i(uniforms.uArt, 0);
       gl.uniform2f(uniforms.uSize, w, h);
+      const tex = texSizeRef.current;
+      let coverScaleX = 1;
+      let coverScaleY = 1;
+      let coverOffsetX = 0;
+      let coverOffsetY = 0;
+      if (tex.w > 0 && tex.h > 0) {
+        const canvasAspect = w / h;
+        const textureAspect = tex.w / tex.h;
+        if (textureAspect > canvasAspect) {
+          coverScaleX = canvasAspect / textureAspect;
+          coverOffsetX = (1 - coverScaleX) / 2;
+        } else {
+          coverScaleY = textureAspect / canvasAspect;
+          coverOffsetY = (1 - coverScaleY) / 2;
+        }
+      }
+      gl.uniform2f(uniforms.uCoverScale, coverScaleX, coverScaleY);
+      gl.uniform2f(uniforms.uCoverOffset, coverOffsetX, coverOffsetY);
       gl.uniform1f(uniforms.uAspect, h / w);
       gl.uniform2f(uniforms.uTilt, (state.tiltX * Math.PI) / 180, ((state.tiltY + state.turn) * Math.PI) / 180);
       gl.uniform2f(uniforms.uLight, state.lightX, state.lightY);
@@ -721,6 +744,7 @@ export default function HoloCard({
 
     loadRef.current = (src?: string) => {
       textureReady = false;
+      texSizeRef.current = { w: 0, h: 0 };
       setReady(false);
       if (!src) return;
       const img = new Image();
@@ -729,6 +753,7 @@ export default function HoloCard({
       img.onload = () => {
         if (!alive) return;
         if (img.naturalWidth && img.naturalHeight) setRatio(img.naturalWidth / img.naturalHeight);
+        texSizeRef.current = { w: img.naturalWidth, h: img.naturalHeight };
         if (!gl || !program) return;
         try {
           gl.bindTexture(gl.TEXTURE_2D, texture);

@@ -106,7 +106,7 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
           <button
             type="button"
             onClick={onPlayAgain}
-            className="flex h-11 w-full items-center justify-center overflow-hidden rounded-full border-[1.4125px] border-black bg-[#f3d98e] pb-[2px] font-pixel text-[24px] leading-[26px] text-[#0e0e0d] transition duration-300 hover:bg-[#ffe3a1] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
+            className="flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-black bg-[#f3d98e] pb-[2px] font-pixel text-[24px] leading-[26px] text-[#0e0e0d] transition duration-300 hover:bg-[#ffe3a1] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
           >
             Play again
           </button>
@@ -114,7 +114,7 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
           <button
             type="button"
             onClick={share}
-            className="holo-btn flex h-11 w-full items-center justify-center overflow-hidden pb-[1.4px] font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
+            className="holo-btn flex h-11 w-full items-center justify-center overflow-hidden pb-px font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
           >
             <span key={status} className="anim-text" aria-live="polite">
               {status === 'copied'

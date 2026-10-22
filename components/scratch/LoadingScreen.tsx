@@ -60,7 +60,7 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
             type="button"
             onClick={onStart}
             disabled={starting}
-            className="holo-btn mx-auto flex h-11 w-[226px] items-center justify-center overflow-hidden pb-[1.4px] font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none disabled:cursor-wait disabled:opacity-40"
+            className="holo-btn mx-auto flex h-11 w-[226px] items-center justify-center overflow-hidden pb-px font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none disabled:cursor-wait disabled:opacity-40"
           >
             <span key={starting ? 'starting' : 'idle'} className="anim-text">
               {starting ? 'Starting…' : 'Try your luck'}
@@ -68,7 +68,8 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
           </button>
           <p
             key={sensing ? 'motion' : 'pointer'}
-            className="anim-text mt-3 min-h-[19px] text-center font-sans text-[16px] font-semibold leading-[19px] text-[#8a8a8a] [@media(min-height:701px)]:mt-4"
+            className="anim-text mt-3 min-h-[19px] w-full text-center font-sans text-[16px] font-semibold leading-[19px] text-[#8a8a8a] [@media(min-height:701px)]:mt-4"
+            style={{ display: 'block' }}
           >
             {sensing ? 'Motion is active — tilt your phone.' : 'Tilt your phone or move the pointer.'}
           </p>

@@ -22,7 +22,7 @@ type PrizeScratchProps = {
   onReady: (index: number) => void;
 };
 
-const SIZE = 86;
+const SIZE = 80;
 const REVEAL_PERCENT = 42;
 
 export default function PrizeScratch({
@@ -54,7 +54,7 @@ export default function PrizeScratch({
 
   return (
     <div
-      className={`relative rounded-full p-[6px] transition-shadow duration-500 ${
+      className={`relative rounded-full p-[3px] transition-shadow duration-500 ${
         revealed
           ? 'shadow-[0_0_0_1px_rgba(255,232,166,0.35),0_0_34px_-8px_rgba(242,208,120,0.65)]'
           : 'shadow-[0_0_0_1px_rgba(255,232,166,0.1),0_0_24px_-12px_rgba(242,208,120,0.5)] hover:shadow-[0_0_0_1px_rgba(255,232,166,0.35),0_0_34px_-8px_rgba(242,208,120,0.65)]'
@@ -64,7 +64,7 @@ export default function PrizeScratch({
           'linear-gradient(145deg, #fff1bd 0%, #d8ab4f 22%, #6d4614 48%, #c2923a 72%, #f8e4a5 100%)'
       }}
     >
-      <div className="relative size-[86px] overflow-hidden rounded-full bg-[#0a0806]">
+      <div className="relative size-[80px] overflow-hidden rounded-full bg-[#0a0806]">
         <ScratchCard
           ref={ref}
           width={SIZE}
