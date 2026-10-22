@@ -177,6 +177,68 @@
   animation: ring-pulse 900ms ease-out forwards;
 }
 
+.welcome-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/holo/welcome-bg.webp');
+  background-position: top center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.game-card {
+  --game-card-w: 324px;
+  --game-card-h: 453px;
+}
+
+@media (max-height: 700px) {
+  .game-card {
+    --game-card-w: 286px;
+    --game-card-h: 400px;
+  }
+}
+
+.holo-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: url('/holo/game-pattern.png');
+  background-repeat: no-repeat;
+  mix-blend-mode: soft-light;
+}
+
+.holo-pattern-game {
+  background-position: top center;
+  background-size: cover;
+  opacity: 0.45;
+}
+
+.holo-pattern-result {
+  background-image: url('/holo/result-pattern.png');
+  background-position: top center;
+  background-size: 100% auto;
+  opacity: 0.28;
+}
+
+.holo-vignette-game {
+  background: radial-gradient(125% 92% at 50% 44%, transparent 35%, rgba(0, 0, 0, 0.62) 100%);
+}
+
+.holo-vignette-result {
+  background: radial-gradient(120% 92% at 50% 42%, transparent 18%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+.holo-btn {
+  border: 1.4125px solid #ffffff;
+  border-radius: 999px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(231, 198, 121, 0.2) 28%,
+    rgba(73, 73, 73, 0.2) 58%,
+    rgba(102, 102, 102, 0.2) 100%
+  );
+}
+
 .holo-backdrop {
   position: absolute;
   inset: -18%;

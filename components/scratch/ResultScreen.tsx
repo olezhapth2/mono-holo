@@ -8,8 +8,46 @@ type ResultScreenProps = {
   onPlayAgain: () => void;
 };
 
+type PrizeRowProps = {
+  prize: (typeof PRIZES)[number];
+  index: number;
+  echo?: boolean;
+  echoIndex?: number;
+};
+
 const SHARE_TEXT =
   'I revealed all three gifts in HOLO CARD: GRAND PRIX, PADDOCK CLUB and GOLD COIN.';
+
+function PrizeRow({ prize, index, echo = false, echoIndex = 0 }: PrizeRowProps) {
+  return (
+    <li
+      aria-hidden={echo || undefined}
+      className={`flex shrink-0 items-start gap-3 border-b border-white/10 pt-[9px] ${
+        echo
+          ? `hidden h-[50px] [@media(min-height:701px)]:flex ${
+              echoIndex === 0 ? 'mt-[7px]' : ''
+            } ${echoIndex === 0 ? 'opacity-50' : 'opacity-20'}`
+          : 'h-[51px] anim-rise'
+      }`}
+      style={echo ? undefined : { animationDelay: `${160 + index * 70}ms` }}
+    >
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#e7c679]/40 bg-[#f2d580]/5">
+        <PrizeIcon kind={prize.kind} id={`result-${echo ? 'echo-' : ''}${index}`} className="size-[14px]" />
+      </span>
+      <span className="flex min-w-0 flex-col items-start gap-0.5 text-left">
+        <span className="font-sans text-[9px] font-bold leading-[12px] tracking-normal text-[#8a8a8a] uppercase">
+          {prize.kicker}
+        </span>
+        <span className="font-sans text-[11px] font-bold leading-[14px] tracking-normal text-[#e8e8e8]">
+          {prize.name}
+        </span>
+      </span>
+      <span className="ml-auto mt-[9px] font-sans text-[9px] font-bold leading-[12px] tracking-normal text-[#e8c87e] uppercase">
+        Won
+      </span>
+    </li>
+  );
+}
 
 export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
   const [status, setStatus] = useState<'idle' | 'shared' | 'copied' | 'error'>('idle');
@@ -34,85 +72,61 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
   };
 
   return (
-    <div className="flex flex-1 flex-col justify-center pt-[max(2.5rem,env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))] animate-[fade-in_500ms_ease-out] motion-reduce:animate-none">
+    <div className="flex flex-1 flex-col pt-[max(2.5rem,env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))] animate-[fade-in_500ms_ease-out] motion-reduce:animate-none [@media(min-height:701px)]:pt-[93px]">
       <div className="flex flex-col items-center text-center">
         <div className="relative anim-rise">
           <span
             className="holo-glow pointer-events-none absolute -inset-x-14 -inset-y-6 rounded-full"
             aria-hidden="true"
           />
-          <h1 className="holo-title relative font-pixel text-[54px] leading-[78px] uppercase">
+          <h1 className="relative font-pixel text-[54px] leading-[78px] text-[#f3d98e] uppercase [text-shadow:0_0_18px_rgba(243,217,142,0.35)] [@media(min-height:701px)]:text-[81px] [@media(min-height:701px)]:leading-[117px]">
             Success
           </h1>
-          <p className="relative mt-2 font-sans text-[14px] font-bold leading-[14px] tracking-[2px] text-white uppercase">
-            You revealed all three gifts
+          <p className="relative mt-1 font-sans text-[16px] font-semibold leading-[19px] tracking-normal text-white [@media(min-height:701px)]:mt-0">
+            You revealed all three GIFTs
           </p>
         </div>
 
-        <div className="mt-7 w-full max-w-[320px]">
-          <div className="anim-rise flex items-center justify-between pb-2 font-sans text-[10px] font-bold leading-[14px] tracking-normal text-[#8a8a8a] uppercase" style={{ animationDelay: '80ms' }}>
+        <div className="mt-7 w-full max-w-[320px] [@media(min-height:701px)]:mt-[40px]">
+          <div className="anim-rise flex h-[22px] items-start justify-between border-b border-white/10 font-sans text-[10px] font-bold leading-[14px] tracking-normal text-[#8a8a8a] uppercase" style={{ animationDelay: '80ms' }}>
             <h2>Possible gifts</h2>
             <span className="text-[#e8c87e]">3/3</span>
           </div>
-          <ul className="border-y border-white/10">
+          <ul className="h-auto overflow-hidden [@media(min-height:701px)]:h-[292px]">
             {PRIZES.map((prize, index) => (
-              <li
-                key={prize.name}
-                className="anim-rise flex items-center gap-3 border-b border-white/10 py-3 last:border-0"
-                style={{ animationDelay: `${160 + index * 70}ms` }}
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#e7c679]/30 bg-[#f2d580]/5">
-                  <PrizeIcon kind={prize.kind} id={`result-${index}`} className="size-[14px]" />
-                </span>
-                <span className="flex min-w-0 flex-col items-start gap-0.5 text-left">
-                  <span className="font-sans text-[9px] font-bold leading-[12px] tracking-normal text-[#8a8a8a] uppercase">
-                    {prize.kicker}
-                  </span>
-                  <span className="font-sans text-[11px] font-bold leading-[14px] tracking-normal text-[#e8e8e8]">
-                    {prize.name}
-                  </span>
-                </span>
-                <span className="ml-auto font-sans text-[9px] font-bold leading-[12px] tracking-normal text-[#e8c87e] uppercase">
-                  Won
-                </span>
-              </li>
+              <PrizeRow key={prize.name} prize={prize} index={index} />
+            ))}
+            {PRIZES.map((prize, index) => (
+              <PrizeRow key={`echo-${prize.name}`} prize={prize} index={index} echo echoIndex={index} />
             ))}
           </ul>
         </div>
-      </div>
 
-      <div className="anim-rise mt-6 flex flex-col items-center gap-3" style={{ animationDelay: '320ms' }}>
-        <button
-          type="button"
-          onClick={onPlayAgain}
-          className="flex min-h-14 w-full max-w-[320px] items-center justify-center overflow-hidden rounded-full bg-[#e7c679] px-6 font-pixel text-[52px] leading-[52px] text-[#0e0e0d] transition duration-300 hover:bg-[#f3d98e] active:scale-[0.98] active:bg-[#dcc078] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
-        >
-          Play again
-        </button>
+        <div className="anim-rise mt-6 flex w-[226px] flex-col items-center gap-3 [@media(min-height:701px)]:mt-[40px] [@media(min-height:701px)]:gap-4" style={{ animationDelay: '320ms' }}>
+          <button
+            type="button"
+            onClick={onPlayAgain}
+            className="flex h-11 w-full items-center justify-center overflow-hidden rounded-full border-[1.4125px] border-black bg-[#f3d98e] pb-[2px] font-pixel text-[24px] leading-[26px] text-[#0e0e0d] transition duration-300 hover:bg-[#ffe3a1] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
+          >
+            Play again
+          </button>
 
-        <button
-          type="button"
-          onClick={share}
-          className="flex min-h-11 w-full max-w-[320px] items-center justify-center rounded-full border border-[#e7c679]/45 bg-[#e7c679]/10 px-6 font-sans text-[15px] font-bold leading-5 text-[#ffe9b0] transition duration-300 hover:border-[#e7c679]/80 hover:bg-[#e7c679]/15 active:scale-[0.98] active:bg-[#e7c679]/20 focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
-        >
-          <span key={status} className="anim-text" aria-live="polite">
-            {status === 'copied'
-              ? 'Link copied'
-              : status === 'shared'
-                ? 'Shared'
-                : status === 'error'
-                  ? 'Try again'
-                  : 'Share'}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onPlayAgain}
-          className="flex min-h-11 items-center justify-center px-4 font-sans text-[11px] font-bold leading-[14px] tracking-normal text-[#8a8a8a] uppercase transition duration-300 hover:text-white/90 active:scale-[0.98] focus-visible:text-white/90 focus-visible:outline-none"
-        >
-          Home
-        </button>
+          <button
+            type="button"
+            onClick={share}
+            className="holo-btn flex h-11 w-full items-center justify-center overflow-hidden pb-[1.4px] font-pixel text-[24px] leading-[26px] text-[#e7c679] transition duration-300 hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
+          >
+            <span key={status} className="anim-text" aria-live="polite">
+              {status === 'copied'
+                ? 'Link copied'
+                : status === 'shared'
+                  ? 'Shared'
+                  : status === 'error'
+                    ? 'Try again'
+                    : 'Share'}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -12,6 +12,22 @@ type ScreenTransition = 'idle' | 'cover' | 'reveal';
 const initialReveal = [false, false, false];
 const initialReady = [false, false, false];
 
+const GAME_GLOWS = [
+  { left: -145, top: -379, size: 793, color: '122,132,82', alpha: 0.12 },
+  { left: -86, top: -230, size: 546, color: '231,198,121', alpha: 0.09 },
+  { left: -145, top: 304, size: 745, color: '231,198,121', alpha: 0.07 },
+  { left: 78, top: 414, size: 654, color: '231,198,121', alpha: 0.07 },
+  { left: -343, top: 503, size: 546, color: '231,198,121', alpha: 0.06 }
+];
+
+const RESULT_GLOWS = [
+  { left: -145, top: -379, size: 793, color: '122,132,82', alpha: 0.1 },
+  { left: -86, top: -230, size: 546, color: '231,198,121', alpha: 0.08 },
+  { left: -348, top: 405, size: 1190, color: '231,198,121', alpha: 0.06 },
+  { left: 8, top: 580, size: 1045, color: '231,198,121', alpha: 0.06 },
+  { left: -664, top: 722, size: 872, color: '231,198,121', alpha: 0.05 }
+];
+
 export default function ScratchGame() {
   const [stage, setStage] = useState<Stage>('welcome');
   const parallaxRef = useParallax(stage === 'welcome');
@@ -112,29 +128,48 @@ export default function ScratchGame() {
       ref={parallaxRef}
       className="holo-ui relative min-h-dvh overflow-x-hidden bg-ink-deep text-white"
     >
-      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        {stage === 'welcome' ? <div className="welcome-bg" /> : null}
         {stage === 'game' ? (
           <>
-            <div className="holo-backdrop" />
-            <div className="holo-aura" />
-            <div className="holo-sheen" />
+            <div className="holo-pattern holo-pattern-game" />
+            {GAME_GLOWS.map((glow, index) => (
+              <div
+                key={`game-glow-${index}`}
+                className="absolute rounded-full"
+                style={{
+                  left: glow.left,
+                  top: glow.top,
+                  width: glow.size,
+                  height: glow.size,
+                  background: `radial-gradient(circle, rgba(${glow.color},${glow.alpha}) 0%, rgba(${glow.color},${glow.alpha * 0.28}) 58%, transparent 100%)`
+                }}
+              />
+            ))}
+            <div className="holo-vignette-game absolute inset-0" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(0,0,0,0.45)_55%,#000_100%)]" />
           </>
         ) : null}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(55% 38% at calc(50% + var(--px, 0) * 10%) calc(38% + var(--py, 0) * 7%), rgba(122,132,82,0.25), transparent 70%)'
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(125% 92% at calc(50% - var(--px, 0) * 4%) calc(44% - var(--py, 0) * 3%), transparent 35%, rgba(0,0,0,0.62) 100%)'
-          }}
-        />
-        {stage === 'game' ? <div className="holo-sparkle" /> : null}
+        {stage === 'result' ? (
+          <>
+            <div className="holo-pattern holo-pattern-result" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.5)_55%,#000_100%)]" />
+            {RESULT_GLOWS.map((glow, index) => (
+              <div
+                key={`result-glow-${index}`}
+                className="absolute rounded-full"
+                style={{
+                  left: glow.left,
+                  top: glow.top,
+                  width: glow.size,
+                  height: glow.size,
+                  background: `radial-gradient(circle, rgba(${glow.color},${glow.alpha}) 0%, rgba(${glow.color},${glow.alpha * 0.28}) 58%, transparent 100%)`
+                }}
+              />
+            ))}
+            <div className="holo-vignette-result absolute inset-0" />
+          </>
+        ) : null}
       </div>
 
       <main className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[390px] flex-col px-4 sm:px-6">
