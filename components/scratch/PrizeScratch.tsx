@@ -19,7 +19,7 @@ type PrizeScratchProps = {
 };
 
 const SIZE = 80;
-const REVEAL_PERCENT = 42;
+const REVEAL_PERCENT = 80;
 
 export default function PrizeScratch({
   index,
@@ -49,14 +49,15 @@ export default function PrizeScratch({
 
   return (
     <div
-      className={`relative rounded-full p-[3px] transition-shadow duration-500 ${
+      className={`relative rounded-full p-[3px] ${
         revealed
-          ? 'shadow-[0_0_0_1px_rgba(255,232,166,0.35),0_0_34px_-8px_rgba(242,208,120,0.65)]'
+          ? 'shadow-[0_0_0_1px_rgba(255,255,255,0.85)]'
           : 'shadow-[0_0_0_1px_rgba(255,232,166,0.1),0_0_24px_-12px_rgba(242,208,120,0.5)] hover:shadow-[0_0_0_1px_rgba(255,232,166,0.35),0_0_34px_-8px_rgba(242,208,120,0.65)]'
       }`}
       style={{
-        backgroundImage:
-          'linear-gradient(145deg, #fff1bd 0%, #d8ab4f 22%, #6d4614 48%, #c2923a 72%, #f8e4a5 100%)'
+        background: revealed
+          ? '#ffffff'
+          : 'linear-gradient(145deg, #fff1bd 0%, #d8ab4f 22%, #6d4614 48%, #c2923a 72%, #f8e4a5 100%)'
       }}
     >
       <div className="relative size-[80px] overflow-hidden rounded-full bg-[#0a0806]">
@@ -78,13 +79,11 @@ export default function PrizeScratch({
           }}
           canvasProps={{
             style: {
-              opacity: revealed ? 0 : 1,
-              transition: 'opacity 620ms ease-out',
-              willChange: 'opacity'
+              opacity: revealed ? 0 : 1
             }
           }}
         >
-          <div className={`absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-full bg-[radial-gradient(circle_at_34%_26%,#f7f5ef_0%,#d5d0c7_52%,#a19e97_100%)] ${revealed ? 'anim-pop' : ''}`}>
+          <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-full bg-[radial-gradient(circle_at_34%_26%,#f7f5ef_0%,#d5d0c7_52%,#a19e97_100%)]">
             <div
               className="absolute inset-0 opacity-30 [background:conic-gradient(from_220deg_at_50%_50%,transparent_0deg,rgba(255,229,158,0.4)_55deg,transparent_120deg,transparent_265deg,rgba(255,229,158,0.22)_310deg,transparent_360deg)]"
               aria-hidden="true"
@@ -102,19 +101,6 @@ export default function PrizeScratch({
             />
           </div>
         </ScratchCard>
-
-        {revealed ? (
-          <>
-            <span
-              className="ring-pulse pointer-events-none absolute inset-0 rounded-full border border-[#f6dea0]/60"
-              aria-hidden="true"
-            />
-            <span
-              className="pointer-events-none absolute inset-0 rounded-full border border-[#f6dea0]/60"
-              aria-hidden="true"
-            />
-          </>
-        ) : null}
       </div>
     </div>
   );
