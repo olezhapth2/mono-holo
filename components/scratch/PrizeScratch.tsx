@@ -8,14 +8,10 @@ import ScratchCard, {
   type ScratchCardRef
 } from 'react-scratchcard-v2';
 import { getScratchCover } from '@/lib/scratchCover';
-import PrizeIcon from './PrizeIcon';
-
-type PrizeKind = 'trophy' | 'helmet' | 'coin';
 
 type PrizeScratchProps = {
   index: number;
   name: string;
-  kind: PrizeKind;
   revealed: boolean;
   clearSignal: number;
   onReveal: (index: number) => void;
@@ -28,7 +24,6 @@ const REVEAL_PERCENT = 42;
 export default function PrizeScratch({
   index,
   name,
-  kind,
   revealed,
   clearSignal,
   onReveal,
@@ -89,26 +84,22 @@ export default function PrizeScratch({
             }
           }}
         >
-          <div className={`absolute inset-0 flex flex-col items-center justify-center gap-1 overflow-hidden rounded-full bg-[radial-gradient(circle_at_34%_26%,#4c350f_0%,#221607_52%,#070503_100%)] ${revealed ? 'anim-pop' : ''}`}>
+          <div className={`absolute inset-0 flex flex-col items-center justify-center overflow-hidden rounded-full bg-[radial-gradient(circle_at_34%_26%,#f7f5ef_0%,#d5d0c7_52%,#a19e97_100%)] ${revealed ? 'anim-pop' : ''}`}>
             <div
-              className="absolute inset-0 opacity-45 [background:conic-gradient(from_220deg_at_50%_50%,transparent_0deg,rgba(255,229,158,0.4)_55deg,transparent_120deg,transparent_265deg,rgba(255,229,158,0.22)_310deg,transparent_360deg)]"
+              className="absolute inset-0 opacity-30 [background:conic-gradient(from_220deg_at_50%_50%,transparent_0deg,rgba(255,229,158,0.4)_55deg,transparent_120deg,transparent_265deg,rgba(255,229,158,0.22)_310deg,transparent_360deg)]"
               aria-hidden="true"
             />
             <div
               className="absolute inset-[4px] rounded-full border border-[#efd28c]/25"
               aria-hidden="true"
             />
-            <PrizeIcon
-              kind={kind}
-              id={`prize-${index}`}
-              className="relative size-[36px] drop-shadow-[0_3px_6px_rgba(0,0,0,0.55)]"
+            <img
+              src="/holo/frame18.svg"
+              alt={name}
+              width={56}
+              height={56}
+              className="relative size-[44px]"
             />
-            <span
-              lang="en"
-              className="relative px-1 text-center font-mono text-[6px] leading-none tracking-[0.14em] text-[#f1d692]"
-            >
-              {name}
-            </span>
           </div>
         </ScratchCard>
 

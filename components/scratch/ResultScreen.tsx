@@ -16,7 +16,7 @@ type PrizeRowProps = {
 };
 
 const SHARE_TEXT =
-  'I revealed all three gifts in HOLO CARD: GRAND PRIX, PADDOCK CLUB and GOLD COIN.';
+  'I revealed all three gifts: GRAND PRIX, PADDOCK CLUB and GOLD COIN.';
 
 function PrizeRow({ prize, index, echo = false, echoIndex = 0 }: PrizeRowProps) {
   return (
@@ -56,7 +56,7 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
     const url = window.location.href;
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'Holo Card', text: SHARE_TEXT, url });
+        await navigator.share({ title: 'Scratch & Win', text: SHARE_TEXT, url });
         setStatus('shared');
         return;
       } catch (error) {
@@ -79,11 +79,11 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
             className="holo-glow pointer-events-none absolute -inset-x-14 -inset-y-6 rounded-full"
             aria-hidden="true"
           />
-          <h1 className="relative font-pixel text-[54px] leading-[78px] text-[#f3d98e] uppercase [text-shadow:0_0_18px_rgba(243,217,142,0.35)] [@media(min-height:701px)]:text-[81px] [@media(min-height:701px)]:leading-[117px]">
-            Success
+          <h1 className="holo-title relative font-pixel text-[36px] leading-[52px] uppercase whitespace-nowrap">
+            Clean Sweep
           </h1>
           <p className="relative mt-1 font-sans text-[16px] font-semibold leading-[19px] tracking-normal text-white [@media(min-height:701px)]:mt-0">
-            You revealed all three GIFTs
+            You revealed all three gifts
           </p>
         </div>
 
@@ -108,7 +108,7 @@ export default function ResultScreen({ onPlayAgain }: ResultScreenProps) {
             onClick={onPlayAgain}
             className="flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-black bg-[#f3d98e] pb-[2px] font-pixel text-[24px] leading-[26px] text-[#0e0e0d] transition duration-300 hover:bg-[#ffe3a1] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[#e7c679]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-deep focus-visible:outline-none"
           >
-            Play again
+            Scratch another card
           </button>
 
           <button

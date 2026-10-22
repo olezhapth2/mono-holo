@@ -19,11 +19,11 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
             className="holo-glow pointer-events-none absolute -inset-x-12 -inset-y-4 rounded-full"
             aria-hidden="true"
           />
-          <h1 className="holo-title relative font-pixel text-[36px] leading-[52px] uppercase">
-            Holo Card
+          <h1 className="holo-title relative font-pixel text-[36px] leading-[52px] uppercase whitespace-nowrap">
+            Scratch &amp; Win
           </h1>
           <p className="relative font-sans text-[16px] font-semibold leading-[19px] text-[#8a8a8a] uppercase">
-            Scratch &amp; Win
+            Three gifts. One card.
           </p>
         </div>
 
@@ -32,12 +32,13 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
             type="button"
             onClick={onStart}
             disabled={starting}
-            aria-label="Open Holo Card"
+            aria-label="Open the card"
+            data-flight-card=""
             className="block cursor-pointer rounded-[2px] transition-transform duration-300 active:scale-[0.985] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/60 disabled:cursor-wait disabled:opacity-80"
           >
             <HoloCard
               image="/holo/f1-scratch.webp"
-              alt="F1 scratch and win card"
+              alt="Scratch and win card with three gifts"
               preset="gold"
               foilColor="#94a3b8"
               intensity={0.9}
@@ -71,7 +72,7 @@ export default function LoadingScreen({ starting, onStart }: LoadingScreenProps)
             className="anim-text mt-3 min-h-[19px] w-full text-center font-sans text-[16px] font-semibold leading-[19px] text-[#8a8a8a] [@media(min-height:701px)]:mt-4"
             style={{ display: 'block' }}
           >
-            {sensing ? 'Motion is active — tilt your phone.' : 'Tilt your phone or move the pointer.'}
+            {sensing ? 'Motion is active — tilt your phone.' : 'Three gifts are hiding under the foil.'}
           </p>
         </div>
       </div>

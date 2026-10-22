@@ -14,6 +14,8 @@ export interface HoloCardProps {
   scale?: number;
   edgeSparkle?: number;
   frame?: number;
+  frameTone?: number;
+  frameSheen?: number;
   glare?: number;
   foilColor?: string;
   width?: number;
@@ -34,6 +36,8 @@ interface Settings {
   scale: number;
   edgeSparkle: number;
   frame: number;
+  frameTone: number;
+  frameSheen: number;
   glare: number;
   foil: number[];
   radius: number;
@@ -69,6 +73,8 @@ uniform float uIntensity;
 uniform float uScale;
 uniform float uEdge;
 uniform float uFrame;
+uniform float uFrameTone;
+uniform float uFrameSheen;
 uniform float uRadius;
 uniform float uGlare;
 uniform vec3 uFoil;
@@ -312,7 +318,7 @@ void main() {
     ? 1.0 - (1.0 - art) * (1.0 - clamp(foil * look.w * band * strength, 0.0, 1.0))
     : mix(art, foil, clamp(strength * look.w, 0.0, 1.0));
   color += sparkles(p, halfway, sweep, mix(0.55, 1.0, tilted)) * uEdge * frame;
-  color += uFoil * sheen * 0.12 * frame;
+  color += uFoil * frame * (uFrameTone + sheen * uFrameSheen);
   color += vec3(sheen * 0.07 + shine * 0.3) * uGlare;
   color = pow(clamp(color, 0.0, 1.0), vec3(1.0 / 2.2));
   outColor = vec4(color * alpha, alpha);
@@ -352,6 +358,8 @@ export default function HoloCard({
   scale = 1,
   edgeSparkle = 0.8,
   frame = 4,
+  frameTone = 0,
+  frameSheen = 0.12,
   glare = 0.5,
   foilColor = '#e2e6ec',
   width = 320,
@@ -403,6 +411,8 @@ export default function HoloCard({
       scale: clamp(scale, 0.25, 4),
       edgeSparkle: clamp(edgeSparkle, 0, 1),
       frame: clamp(frame, 0, 20) / 100,
+      frameTone: clamp(frameTone, 0, 1),
+      frameSheen: clamp(frameSheen, -1, 1),
       glare: clamp(glare, 0, 1),
       foil: parseColor(foilColor),
       radius: Math.max(0, radius),
@@ -410,7 +420,7 @@ export default function HoloCard({
       hoverScale: clamp(hoverScale, 0.8, 1.3),
       idle
     }),
-    [preset, intensity, scale, edgeSparkle, frame, glare, foilColor, radius, tiltMax, hoverScale, idle]
+    [preset, intensity, scale, edgeSparkle, frame, frameTone, frameSheen, glare, foilColor, radius, tiltMax, hoverScale, idle]
   );
 
   useEffect(() => {
@@ -567,6 +577,8 @@ export default function HoloCard({
           'uScale',
           'uEdge',
           'uFrame',
+          'uFrameTone',
+          'uFrameSheen',
           'uRadius',
           'uGlare',
           'uFoil',
@@ -639,6 +651,8 @@ export default function HoloCard({
       gl.uniform1f(uniforms.uScale, s.scale);
       gl.uniform1f(uniforms.uEdge, s.edgeSparkle);
       gl.uniform1f(uniforms.uFrame, s.frame);
+      gl.uniform1f(uniforms.uFrameTone, s.frameTone);
+      gl.uniform1f(uniforms.uFrameSheen, s.frameSheen);
       gl.uniform1f(uniforms.uRadius, s.radius / Math.max(1, canvas.clientWidth));
       gl.uniform1f(uniforms.uGlare, s.glare);
       gl.uniform3f(uniforms.uFoil, s.foil[0], s.foil[1], s.foil[2]);
